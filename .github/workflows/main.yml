@@ -1,0 +1,26 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  check-text-files:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: List files in repository
+      run: dir
+
+    - name: Check text files
+      run: |
+        Get-ChildItem -Path . -Filter *.txt | ForEach-Object {
+          Write-Host "Checking file $($_.Name)"
+          $content = Get-Content -Path $_.FullName
+          if ($content -match "sample") {
+            Write-Host "File $($_.Name) contains the word 'sample'"
+          } else {
+            Write-Host "File $($_.Name) does not contain the word 'sample'"
+          }
+        }
